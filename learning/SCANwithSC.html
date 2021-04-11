@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+ <head>
+  <title>
+   Cross-Modal Image-Text Retrieval with Semantic Consistency —— TabulaRasaKLD Blog
+  </title>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport"/>
+  <link href="../assets/css/main.css" rel="stylesheet"/>
+  <noscript>
+   <link href="../assets/css/noscript.css" rel="stylesheet"/>
+  </noscript>
+ </head>
+ <body class="is-preload">
+  <!-- Wrapper -->
+  <div id="wrapper">
+   <!-- Header -->
+   <header id="header">
+    <a class="logo" href="index.html">
+     Tabula Rasa KLD
+    </a>
+   </header>
+   <!-- Nav -->
+   <nav id="nav">
+    <ul class="links">
+     <li class="active">
+      <a href="./learning/index/1.html">
+       学习笔记
+      </a>
+     </li>
+     <li>
+      <a href="index.html">
+       b
+      </a>
+     </li>
+     <li>
+      <a href="index.html">
+       c
+      </a>
+     </li>
+    </ul>
+    <ul class="icons">
+    </ul>
+   </nav>
+   <!-- Main -->
+   <div id="main">
+    <!-- Post -->
+    <section class="post">
+     <header class="major">
+      <span class="date">
+       2020/11/27 23:52:13
+      </span>
+      <h1>
+       Cross-Modal Image-Text Retrieval with Semantic Consistency
+      </h1>
+      <p>
+       不同空间应该保持一致，加入语义一致性 Semantic Consistency约束，一致地学习不同的嵌入空间，最终评判标准为不同空间得分之和。
+      </p>
+     </header>
+     <p>
+     </p>
+     <p>
+      背景
+     </p>
+     <p>
+      现有方法(SCAN)在不同模态间独立学习不同的空间，导致语义不一致，如SCAN中基于图像和文本的空间各自独立学习，基于文本的空间中检索成功而基于图像的空间中检索失败
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Cross-Modal Image-Text Retrieval with Semantic Consistency7"/>
+     </div>
+     <p>
+      提取特征
+     </p>
+     <p>
+      与SCAN一致
+     </p>
+     <p>
+      图片：Faster R-CNN
+     </p>
+     <p>
+      文本：双向GRU
+     </p>
+     <p>
+      V = {vi,j | j =1, ..., k, vi,j ∈ Rd}
+     </p>
+     <p>
+      T = {ti,j | j =1, ..., n, ti,j ∈ Rd}
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Cross-Modal Image-Text Retrieval with Semantic Consistency14"/>
+     </div>
+     <p>
+      Image-grounded embedding space
+     </p>
+     <p>
+      与SCAN一致
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Cross-Modal Image-Text Retrieval with Semantic Consistency17"/>
+     </div>
+     <p>
+      Integrated similarity score
+     </p>
+     <p>
+      将基于图像和基于文本的嵌入空间得到的两个余弦相似度相加
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Cross-Modal Image-Text Retrieval with Semantic Consistency20"/>
+     </div>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Cross-Modal Image-Text Retrieval with Semantic Consistency21"/>
+     </div>
+     <p>
+      一个图文对在两个空间中最终的两个分数都很高时最终得分才能较高
+     </p>
+     <p>
+     </p>
+     <p>
+      损失函数
+     </p>
+     <p>
+      第一部分：
+     </p>
+     <p>
+      为了使基于图像和基于文本对于一个图文对得出相近的得分，保持两个空间的语义一致性
+     </p>
+     <p>
+      训练过程中，定义散布D(I, S)，对于每个batch {(Ii, Si)}，Nb为batchsize
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Cross-Modal Image-Text Retrieval with Semantic Consistency28"/>
+     </div>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Cross-Modal Image-Text Retrieval with Semantic Consistency29"/>
+     </div>
+     <p>
+      第二部分：
+     </p>
+     <p>
+      为了使相似度越高的图文对有更高的得分，与SCAN一致
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Cross-Modal Image-Text Retrieval with Semantic Consistency32"/>
+     </div>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Cross-Modal Image-Text Retrieval with Semantic Consistency33"/>
+     </div>
+     <p>
+      总的：
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Cross-Modal Image-Text Retrieval with Semantic Consistency35"/>
+     </div>
+    </section>
+   </div>
+   <!-- Footer -->
+   <footer id="footer">
+   </footer>
+   <!-- Copyright -->
+   <div id="copyright">
+    <ul>
+     <li>
+      Design:
+      <a href="https://html5up.net">
+       HTML5 UP
+      </a>
+     </li>
+     <li>
+      ©2020-2021 TabulaRasaKLD
+     </li>
+    </ul>
+   </div>
+  </div>
+  <!-- Scripts -->
+  <script src="../assets/js/jquery.min.js">
+  </script>
+  <script src="../assets/js/jquery.scrollex.min.js">
+  </script>
+  <script src="../assets/js/jquery.scrolly.min.js">
+  </script>
+  <script src="../assets/js/browser.min.js">
+  </script>
+  <script src="../assets/js/breakpoints.min.js">
+  </script>
+  <script src="../assets/js/util.js">
+  </script>
+  <script src="../assets/js/main.js">
+  </script>
+ </body>
+</html>

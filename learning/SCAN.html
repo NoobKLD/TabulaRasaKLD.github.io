@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+ <head>
+  <title>
+   Stacked Cross Attention for Image-Text Matching —— TabulaRasaKLD Blog
+  </title>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport"/>
+  <link href="../assets/css/main.css" rel="stylesheet"/>
+  <noscript>
+   <link href="../assets/css/noscript.css" rel="stylesheet"/>
+  </noscript>
+ </head>
+ <body class="is-preload">
+  <!-- Wrapper -->
+  <div id="wrapper">
+   <!-- Header -->
+   <header id="header">
+    <a class="logo" href="index.html">
+     Tabula Rasa KLD
+    </a>
+   </header>
+   <!-- Nav -->
+   <nav id="nav">
+    <ul class="links">
+     <li class="active">
+      <a href="./learning/index/1.html">
+       学习笔记
+      </a>
+     </li>
+     <li>
+      <a href="index.html">
+       b
+      </a>
+     </li>
+     <li>
+      <a href="index.html">
+       c
+      </a>
+     </li>
+    </ul>
+    <ul class="icons">
+    </ul>
+   </nav>
+   <!-- Main -->
+   <div id="main">
+    <!-- Post -->
+    <section class="post">
+     <header class="major">
+      <span class="date">
+       2020/11/20 21:48:56
+      </span>
+      <h1>
+       Stacked Cross Attention for Image-Text Matching
+      </h1>
+      <p>
+       本文提出了一个 Stacked Cross Attention Network 将 words 和 image regions 映射到一个共同的 embedding space 来预测整张图和一个句子之间的相似性。作者首先用 bottom-up attention 来检测和编码图像区域，提取其 feature。与此同时，也对 word 进行单词映射。然后用 Stacked Cross Attention 来推理对齐后的 image region 和 word feature 之间的 image-sentence similarity
+      </p>
+     </header>
+     <p>
+      输入有两个：一个是 image features V = {v1, v2, ... , vk}，每一个图像特征编码了图像中的一个区域；另外一个是单词特征组合是 E = {e1, e2, ... , en}，每一个单词特征编码了句子中的一个单词。输出是 image-pair 之间的相似性得分。本文定义了两种互补的形式：Image-Text 以及 Text-Image 的版本。
+     </p>
+     <p>
+      具体来说，给定图像 I 及其 k 个检测的区域，一个带有 n 个单词的句子 T，我们首先计算所有图像对之间的余弦相似性：Sij 代表了 第 i 个region 和 第 j 个word 之间的相似性。
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching6"/>
+     </div>
+     <p>
+      将该相似性得分进行归一化处理后为：
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching8"/>
+     </div>
+     <p>
+      用对应图像区域i对 word 进行 attend，用加权混合词特征的方法计算出第i个图像区域对于句意的贡献ati，其中αij为注意力权重，它描述了区域i与词j之间的相关性，其中λ1用于调节加强Softmax的效果。
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching10"/>
+     </div>
+     <p>
+      给定句子向量，为了确定每一个图像区域的重要性，作者定义了第 i 个 region vector和  attended sentence vector 句子之间的相关性，余弦相似性：
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching15"/>
+     </div>
+     <p>
+      图像 I 和 句子 T 之间的相似性可以用 Log-SumExp pooling 来计算：
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching17"/>
+     </div>
+     <p>
+      或者：
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching19"/>
+     </div>
+     <p>
+      其中 λ2 是一个超参数，决定了图像区域特征 和 attend 之后句子向量之间最相关的 pairs 的重要性，用于放大相关度最高项的影响（重视相关度高的，忽略相关度低的）
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching22"/>
+     </div>
+     <p>
+      首先，用对应每一个图像区域来 attend 句子中的单词。第二阶段中，其对比了每一个图像区域和对应 attended 句子向量，从而确定图像区域的重要性。
+     </p>
+     <p>
+      同理：
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching25"/>
+     </div>
+     <p>
+      Loss Function
+     </p>
+     <p>
+      对于 Image-Text matching 来说，通常采用 triplet loss：
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching28"/>
+     </div>
+     <p>
+      在本文中，作者聚焦于一个 mini-batch 中的 hardest negatives，对于一个 positive pair (I, T)，hardest negatives 可以通过如下的方式给定：
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching30"/>
+     </div>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching31"/>
+     </div>
+     <p>
+      图片表示
+     </p>
+     <p>
+      文中使用Faster R-CNN方法检测目标区域。为了让模型识别到更多细节，使用属性分类和实例分类（包括天空、草地、毛皮质地等）来训练模型，对最后卷积层的输出做平均池化，并通过全连接层变换维度。最终将一张图片表示成：v={v1,...,vk}，其中v是每一区域的特征，k是区域个数。
+     </p>
+     <p>
+     </p>
+     <p>
+      文本表示
+     </p>
+     <p>
+      为了使用同一尺度比较图片和文本，需要将文本也转换成与图同维度的特征，同时还需要考虑组合的语义信息以及上下文的影响。将每个词转换成300维的词嵌入，然后代入双向GRU（循环网络）并输出最后的隐藏层h，最终输出结合前后双向上下文的词特征。
+     </p>
+     <p>
+     </p>
+     <p>
+      图像特征：采用ResNet-101的Faster R-CNN网络对每一个图像产生k个目标区域，提取每一个目标对象的特征，嵌入矩阵变换为h维的vector
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching39"/>
+     </div>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching40"/>
+     </div>
+     <p>
+      faster-RCNN，Resnet101 --&gt; 2048维特征 --&gt; fc层到h维 --&gt; 得到特征集合v
+     </p>
+     <p>
+      文本特征：文本的每一个word得到one-hot vector，embedding后为300维的vector，再用双向GRU得到h维的vector（bi-directional GRU）
+     </p>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching43"/>
+     </div>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching44"/>
+     </div>
+     <p>
+     </p>
+     <div class="image fit">
+      <img src="pic\Stacked Cross Attention for Image-Text Matching45"/>
+     </div>
+     <p>
+      word ----&gt; one-hot vector ----&gt; embeding到300维 ----&gt; 双向GRU到h维
+     </p>
+     <p>
+     </p>
+     <p>
+      总结
+     </p>
+     <p>
+      这篇文章最突出的就在于把attention应用到了word和region层面上的对齐，这就带来了很大解释性方面的提升，word和region的互相注意力机制和相似度计算，利用attention进行了更加精细的对齐。
+     </p>
+     <p>
+      在本文中，提出Stacked Cross Attention，使用图像区域和句子中的单词作为上下文来发现完整的潜在对齐，并推断出图像 - 文本的相似性。
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+    </section>
+   </div>
+   <!-- Footer -->
+   <footer id="footer">
+   </footer>
+   <!-- Copyright -->
+   <div id="copyright">
+    <ul>
+     <li>
+      Design:
+      <a href="https://html5up.net">
+       HTML5 UP
+      </a>
+     </li>
+     <li>
+      ©2020-2021 TabulaRasaKLD
+     </li>
+    </ul>
+   </div>
+  </div>
+  <!-- Scripts -->
+  <script src="../assets/js/jquery.min.js">
+  </script>
+  <script src="../assets/js/jquery.scrollex.min.js">
+  </script>
+  <script src="../assets/js/jquery.scrolly.min.js">
+  </script>
+  <script src="../assets/js/browser.min.js">
+  </script>
+  <script src="../assets/js/breakpoints.min.js">
+  </script>
+  <script src="../assets/js/util.js">
+  </script>
+  <script src="../assets/js/main.js">
+  </script>
+ </body>
+</html>
